@@ -1,0 +1,76 @@
+.nav-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 0rem;
+  background-color: white;
+  z-index: 100;
+  height: 50px;
+  position: fixed; 
+  top: 0; 
+  box-shadow: 0 4px 2px -2px rgb(187, 186, 186); /
+}
+
+.nav-left {
+  display: flex;
+  align-items: center; 
+  padding-left: 5rem;
+}
+
+.nav-left > img {
+  max-width: 60px;
+  height: 60px;
+  margin-top: 0; 
+}
+
+.nav-left > h5 {
+  margin-left: 0;
+  margin-top: 25px; 
+  font-size: 16px;
+  color: rgb(69, 67, 67);
+}
+
+.nav-midle {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-items {
+  background: none;
+  border: 0;
+  color: rgb(112, 111, 111);
+  display: block;
+  cursor: pointer;
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  padding: 0.1rem;
+  transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+}
+
+.nav-right {
+  display: flex;
+  gap: 1em;
+}
+
+.nav-buttons button {
+  margin-right: 1em;
+  width: 7em;
+  font-size: 16px;
+  background-color: #198754;
+  color: white;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}

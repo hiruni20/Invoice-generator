@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import './InvoiceTemp.css';
 import { RxLoop } from "react-icons/rx";
 import { RiDownloadLine } from "react-icons/ri";
@@ -14,6 +14,9 @@ function InvoiceTemp() {
     const [showAddShipping, setShowAddShippping] =useState(true);
     const [tax, setTax] = useState({ value: 0, type: '%' });
     const [subtotal, setSubtotal] = useState(0);
+    const [amountPaid, setAmountPaid] = useState(0);
+    const [balanceDue, setBalanceDue] = useState(0);
+    
     
 
     
@@ -125,6 +128,9 @@ function InvoiceTemp() {
       calculateSubtotal();
     }, [items]);
 
+    useEffect(() => {
+        setBalanceDue(getTotal() - amountPaid);
+    }, [amountPaid, subtotal, discounts, tax, shipping]);
 
     
    
@@ -180,7 +186,7 @@ function InvoiceTemp() {
               <div className='space'>
 
               </div>
-              <div className='no' style={{marginTop: '-50px', position: 'relative', zIndex: '3'}}>
+              <div className='no' style={{marginTop: '-30px', position: 'relative', zIndex: '3'}}>
                   <input type="text" placeholder="#" className="invoice-no" style={{ width: '150px', marginTop: '0px', position: 'relative', zIndex: '2' }} />
               </div>
 
@@ -298,13 +304,18 @@ function InvoiceTemp() {
             
             <div className='form-row'>
                 <input type="text" placeholder="Subtotal" className='col-in'  style={{width:'80px', height:'36px'}} />              
-                <input type="" placeholder="$0.00" value={subtotal} readOnly style={{width:'200px', height:'36px',}} /> 
+                <input type="" placeholder="$0.00" value={subtotal} readOnly style={{width:'200px', height:'36px',textAlign:'right',border:'none'}} /> 
               
             </div>
             <div className='form-row' style={{paddingTop:'2px'}}>
             <input type="text" placeholder="Tax" className="col-in" />
             <div className="tax-input-container">
-            <input type="text" placeholder={inputMode} className="percentage-input" />
+            <input 
+                type="Number" 
+                placeholder={inputMode} 
+                className="percentage-input"
+                value={tax.value}
+                onChange={(e) => setTax({ ...tax, value: e.target.value })} />
                 <button type="button" className="loop-button" onClick={toggleInputMode}>
                    <i style={{background:'none'}}><RxLoop /></i>
                 </button>
@@ -327,17 +338,17 @@ function InvoiceTemp() {
             </div>
             {discounts.map((discount, index) => (
               <div className="total-row" key={index}>
-                <input type="text" placeholder="Discount" className="col-in" />
-                <div className="tax-input-container" style={{marginLeft:'10px'}}>
+                <input type="text" placeholder="Discount" className="col-in" style={{paddingRight:'10px'}}/>
+                <div className="dis-input-container" >
                   <input
-                    type="text"
+                    type="Number"
                     placeholder={discount.type}
                     className="percentage-input"
                     value={discount.value}
                     onChange={(e) => handleDiscountChange(index, 'value', e.target.value)}
                     style={{border:'none',paddingRight:'20px'}}
                   />
-                  <button type="button" className="loop-button" style={{alignItems:'end'}} onClick={() => toggleDiscountType(index)}>
+                  <button type="button" className="loop-button" style={{alignItems:'end',width:'20px'}} onClick={() => toggleDiscountType(index)}>
                   <i style={{background:'none',alignItems:'end'}}><RxLoop /></i>
                   </button>
                 </div>
@@ -347,11 +358,11 @@ function InvoiceTemp() {
             ))}
             {shipping.map((shipping, index) => (
               <div className="total-row" key={index}>
-                <input type="text" placeholder="Shipping" className="col-in" />
-                <div className="tax-input-container" style={{marginLeft:'10px'}}>
+                <input type="text" placeholder="Shipping" className="col-in" style={{paddingRight:'2px',width:'100'}}/>
+                <div className="dis-input-container" style={{width:'200px'}} >
                   <input
-                    type="text"
-                    placeholder={shipping.type}
+                    type="Number"
+                    placeholder=''
                     className="percentage-input"
                     value={shipping.value}
                     onChange={(e) => handleShippingChange(index, 'value', e.target.value)}
@@ -363,11 +374,33 @@ function InvoiceTemp() {
                 
               </div>
             ))}
+            
             <div className='form-row'>
                 <input type="" placeholder="Total" className='col-in' style={{width:'80px', height:'36px'}} />              
-                <input type="" placeholder="$0.00" value={getTotal()} readOnly style={{width:'200px', height:'36px',}} /> 
+                <input type="" className="Ftotal"placeholder="$0.00" value={getTotal()} readOnly style={{width:'200px', height:'36px',}} /> 
               
             </div>
+            <div className='form-row'>
+              <input type="text" placeholder="Amount Paid" className='col-in' style={{width:'80px', height:'36px'}} />
+              <input 
+                  type="Number" 
+                  placeholder="" 
+                  className='col' 
+                  value={amountPaid}
+                  onChange={(e) => setAmountPaid(parseFloat(e.target.value) || 0)}
+                  style={{width:'80px', height:'36px',textAlign:'right'}} />  
+              </div>
+              <div className='form-row'>
+                <input type="" placeholder="Balance Due" className='col-in' style={{width:'80px', height:'36px'}} />              
+                <input 
+                    type="" 
+                    className="Ftotal"
+                    placeholder="$0.00"
+                    value={balanceDue} readOnly  
+                    style={{width:'200px', height:'36px',}} /> 
+              
+            </div>
+
             </div>
           </div>
           
@@ -375,7 +408,7 @@ function InvoiceTemp() {
       </div>
       <div className='submit-container'>
           <div className='sbt-btn'>
-            <button><RiDownloadLine  style={{fontSize:'16px',marginRight:'10px',fontWeight:'bold'}}/>Downlod PDF</button>
+            <button><RiDownloadLine  style={{fontSize:'16px',marginRight:'10px',fontWeight:'bold'}}/>Download PDF</button>
           </div>  
           <div className='currency-selector'>
           <div className='selector'>

@@ -408,7 +408,7 @@ function InvoiceTemp() {
       </div>
       <div className='submit-container'>
           <div className='sbt-btn'>
-            <button><RiDownloadLine  style={{fontSize:'16px',marginRight:'10px',fontWeight:'bold'}}/>Downlod PDF</button>
+            <button><RiDownloadLine  style={{fontSize:'16px',marginRight:'10px',fontWeight:'bold'}}/>Download PDF</button>
           </div>  
           <div className='currency-selector'>
           <div className='selector'>

@@ -352,7 +352,7 @@ border: 1px solid #cac8c8 !important;
   border: 1px solid #ccc;
   border-radius: 4px;
   overflow: hidden;
-  width: 200px;
+  width: 210px;
   margin-bottom: 10px;
 }
 
@@ -464,7 +464,10 @@ background: none;
 
 height: 40px;
 }
-
+.loop-button{
+  border-radius: 0%;
+  align-items: end;
+}
 
 
 @media (max-width: 768px) {

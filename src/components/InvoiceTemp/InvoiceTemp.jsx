@@ -1,8 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect,Component } from "react";
 import "./InvoiceTemp.css";
 import { RxLoop } from "react-icons/rx";
 import { RiDownloadLine } from "react-icons/ri";
 import ReactToPrint from "react-to-print";
+
+
+        
 
 function InvoiceTemp() {
   const [items, setItems] = useState([
@@ -10,6 +13,7 @@ function InvoiceTemp() {
   ]);
   const [currency, setCurrency] = useState("USD");
   const [logoUrl, setLogoUrl] = useState("");
+  const [logo, setLogo] = useState(null);
   const [inputMode, setInputMode] = useState("%");
   const [discounts, setDiscounts] = useState([]);
   const [showAddDiscountButton, setShowAddDiscountButton] = useState(true);
@@ -38,15 +42,20 @@ function InvoiceTemp() {
     setItems(newItems);
   };
 
-  const handleLogoChange = (e) => {
-    const file = e.target.files[0];
+  
+  const handleLogoChange = (file) => {
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setLogoUrl(imageUrl);
+      const url = URL.createObjectURL(file);
+      setLogo(file);
+      setLogoUrl(url);
     }
   };
-  const handleRemoveLogo = () => {
-    setLogoUrl("");
+
+  const handleRemoveLogo = (e) => {
+    e.preventDefault();
+    setLogo(null);
+    setLogoUrl('');
+    document.getElementById('logo').value = '';
   };
 
   const toggleInputMode = () => {
@@ -168,6 +177,7 @@ function InvoiceTemp() {
       </div>
 
       <div className="form-holder">
+      <div ref={(el) => formRef.current = el}>
         <div className="form-container">
           <form className="invoice-editor">
             <div className="header">
@@ -186,7 +196,7 @@ function InvoiceTemp() {
                       id="logo"
                       accept="image/*"
                       className="logo"
-                      onChange={handleLogoChange}
+                      onChange={(e) => handleLogoChange(e.target.files[0])}
                     />
                     {logoUrl ? (
                       <>
@@ -260,7 +270,7 @@ function InvoiceTemp() {
 
             <div
               className="details"
-              style={{ marginTop: "-50px", position: "relative", zIndex: "1" }}
+              style={{ marginTop: "20px", position: "relative", zIndex: "1" }}
             >
               <div className="form-row">
                 <input
@@ -271,8 +281,8 @@ function InvoiceTemp() {
                 />
               </div>
               <div className="form-row">
-                <div className="form-row">
-                  <div className="form-column">
+                <div className="form-row"style={{paddingBottom:'8em'}}>
+                  <div className="form-column" >
                     <input
                       type="text"
                       placeholder="Bill To"
@@ -329,7 +339,7 @@ function InvoiceTemp() {
                       style={{ width: "50px", height: "36px" }}
                     />
                     <input
-                      type="text"
+                      type="date"
                       placeholder=""
                       style={{ width: "200px", height: "36px" }}
                     />
@@ -375,66 +385,82 @@ function InvoiceTemp() {
                 </div>
               </div>
             </div>
+          <div className="items">
+            <table style={{ borderCollapse: 'collapse' }}>
+                    <thead>
+                      <tr className="header"style={{ backgroundColor: "#05083b", color:'#fff' }}>
+                        <th style={{ border: 'none', fontWeight:'300', paddingLeft:'10px',width: '40%'}}>Item</th>
+                        <th style={{ border: 'none', fontWeight:'300', paddingLeft:'10px',textAlign:'center'}}>Qty</th>
+                        <th style={{ border: 'none', fontWeight:'300', paddingLeft:'10px',textAlign:'center'}}>Rate</th>
+                        <th style={{ border: 'none', fontWeight:'300', paddingRight:'10px',textAlign:'right'}}>Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {items.map((item, index) => (
+                        <tr className="tbl-row"  key={index}>
+                          <td  >
+                            <input
+                              type="text"
+                              placeholder="Description of service or product"
+                              value={item.description}
+                              className="d-row"
+                              onChange={(e) =>
+                                handleItemChange(index, "description", e.target.value)
+                              }
+                              style={{ width: "450px" ,height:'40px', marginRight:'10px'}}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              placeholder="Quantity"
+                              value={item.quantity}
+                              className="d-row"
+                              onChange={(e) =>
+                                handleItemChange(index, "quantity", e.target.value)
+                              }
+                              style={{height:'40px',textAlign:"right"}}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              placeholder="Rate"
+                              value={item.rate}
+                              className="d-row"
+                              onChange={(e) =>
+                                handleItemChange(index, "rate", e.target.value)
+                              }
+                              style={{height:'40px',textAlign:"right"}}
+                            />
+                          </td>
+                          <td style={{height:'40px',textAlign:"right"}}>{item.quantity * item.rate}</td>
+                          <td>
+                            <button
+                              type="button"
+                              onClick={() => removeItem(index)}
+                              className="remove-btn"
+                            >
+                              x
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
 
-            <div className="items">
-              <div className="item-row" style={{ backgroundColor: "#05083b" }}>
-                <input type="text" placeholder="item" className="tble" />
-                <input type="text" placeholder="Qty" className="tbl" />
-                <input type="text" placeholder="Rate" className="tbl" />
-                <input type="text" placeholder="Amount" className="tbl" />
-              </div>
-
-              {items.map((item, index) => (
-                <div className="item-row" key={index}>
-                  <input
-                    type="text"
-                    placeholder="Description of service or product"
-                    value={item.description}
-                    onChange={(e) =>
-                      handleItemChange(index, "description", e.target.value)
-                    }
-                    style={{ width: "350px" }}
-                  />
-                  <input
-                    type="number"
-                    placeholder="Quantity"
-                    value={item.quantity}
-                    onChange={(e) =>
-                      handleItemChange(index, "quantity", e.target.value)
-                    }
-                  />
-                  <input
-                    type="number"
-                    placeholder="Rate"
-                    value={item.rate}
-                    onChange={(e) =>
-                      handleItemChange(index, "rate", e.target.value)
-                    }
-                  />
-                  <span>{item.quantity * item.rate}</span>
                   <button
                     type="button"
-                    onClick={() => removeItem(index)}
-                    className="remove-btn"
+                    onClick={addItem}
+                    style={{
+                      backgroundColor: "#fff",
+                      color: "#198754",
+                      border: "1px solid #198754",
+                    }}
                   >
-                    x
+                    + Line Item
                   </button>
-                </div>
-              ))}
-
-              <button
-                type="button"
-                onClick={addItem}
-                style={{
-                  backgroundColor: "#fff",
-                  color: "#198754",
-                  border: "1px solid #198754",
-                }}
-              >
-                + Line Item
-              </button>
-            </div>
-
+                  </div>
             <div className="totals">
               <div className="container-right">
                 <div className="form-column">
@@ -452,7 +478,7 @@ function InvoiceTemp() {
                     placeholder="Notes - any relevant information not already covered"
                     required
                     style={{
-                      width: "500px",
+                      width: "400px",
                       height: "60px",
                       marginTop: "10px",
                       marginBottom: "10px",
@@ -474,7 +500,7 @@ function InvoiceTemp() {
                     placeholder="Terms and conditions - Late fees, payment metods,delivery shedule"
                     required
                     style={{
-                      width: "500px",
+                      width: "400px",
                       height: "60px",
                       marginTop: "10px",
                       marginBottom: "10px",
@@ -690,28 +716,34 @@ function InvoiceTemp() {
                     placeholder="$0.00"
                     value={balanceDue}
                     readOnly
-                    style={{ width: "200px", height: "36px" }}
+                    style={{ width: "200px", height: "36px",marginTop:'10px' }}
                   />
                 </div>
               </div>
             </div>
           </form>
         </div>
+        </div>
         <div className="submit-container">
           <div className="sbt-btn">
           <ReactToPrint 
-          trigger={() => (<button>
-              <RiDownloadLine
+    trigger={() => (
+        <button>
+            <RiDownloadLine
                 style={{
-                  fontSize: "16px",
-                  marginRight: "10px",
-                  fontWeight: "bold",
+                    fontSize: "16px",
+                    marginRight: "10px",
+                    fontWeight: "bold",
                 }}
-              />
-               Download PDF
-            </button> )}
-              content={() => formRef.current}
             />
+            Download PDF
+        </button>
+    )}
+    content={() => formRef.current}
+    documentTitle="new document"
+    pageStyle="print"
+/>
+
           </div>
           <div className="currency-selector">
             <div className="selector">
@@ -748,3 +780,61 @@ function InvoiceTemp() {
 }
 
 export default InvoiceTemp;
+{/* <div className="items">
+              <div className="item-row" style={{ backgroundColor: "#05083b" }}>
+                <input type="text" placeholder="item" className="tble" />
+                <input type="text" placeholder="Qty" className="tbl" />
+                <input type="text" placeholder="Rate" className="tbl" />
+                <input type="text" placeholder="Amount" className="tbl" />
+              </div>
+
+              {items.map((item, index) => (
+                <div className="item-row" key={index}>
+                  <input
+                    type="text"
+                    placeholder="Description of service or product"
+                    value={item.description}
+                    onChange={(e) =>
+                      handleItemChange(index, "description", e.target.value)
+                    }
+                    style={{ width: "350px" }}
+                  />
+                  <input
+                    type="number"
+                    placeholder="Quantity"
+                    value={item.quantity}
+                    onChange={(e) =>
+                      handleItemChange(index, "quantity", e.target.value)
+                    }
+                  />
+                  <input
+                    type="number"
+                    placeholder="Rate"
+                    value={item.rate}
+                    onChange={(e) =>
+                      handleItemChange(index, "rate", e.target.value)
+                    }
+                  />
+                  <span>{item.quantity * item.rate}</span>
+                  <button
+                    type="button"
+                    onClick={() => removeItem(index)}
+                    className="remove-btn"
+                  >
+                    x
+                  </button>
+                </div>
+              ))}
+
+              <button
+                type="button"
+                onClick={addItem}
+                style={{
+                  backgroundColor: "#fff",
+                  color: "#198754",
+                  border: "1px solid #198754",
+                }}
+              >
+                + Line Item
+              </button>
+              </div>*/}

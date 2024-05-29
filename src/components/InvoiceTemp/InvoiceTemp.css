@@ -205,6 +205,7 @@ border: 1px solid #cac8c8 !important;
 
 
 
+
 .header, .details, .items, .totals, .footer {
   margin-bottom: 20px;
 }
@@ -265,6 +266,8 @@ border: 1px solid #cac8c8 !important;
   flex: 1;
   margin-right: 20px;
   padding-right: 1em;
+
+  
 }
 .form-column-special{
   flex: 1;
@@ -289,6 +292,7 @@ border: 1px solid #cac8c8 !important;
   flex-direction: row;
   margin-top: -50px;
   
+
 }
 .remove-logo-btn{
   background: none;
@@ -297,6 +301,7 @@ border: 1px solid #cac8c8 !important;
 }
 .totals .total-row {
   display: flex;
+
   
   margin-bottom: 10px;
 }
@@ -396,6 +401,7 @@ border: 1px solid #cac8c8 !important;
 .submit-container{
   width: 100%;
   
+
 }
 .sbt-btn{
   width: 80%;
@@ -477,3 +483,4 @@ height: 40px;
     margin-right: 0;
   }
 }
+

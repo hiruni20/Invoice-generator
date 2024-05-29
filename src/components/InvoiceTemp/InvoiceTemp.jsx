@@ -70,11 +70,8 @@ function InvoiceTemp() {
       setShipping(newShipping);
     };
   
-    const toggleDiscountType = (index) => {
-      const newDiscounts = discounts.slice();
-      newDiscounts[index].type = newDiscounts[index].type === '%' ? '$' : '%';
-      setDiscounts(newDiscounts);
-    };
+    
+    
     const removeDiscount = (index) => {
       const newDiscounts = discounts.slice();
       newDiscounts.splice(index, 1);
@@ -96,6 +93,12 @@ function InvoiceTemp() {
       });
       setSubtotal(total);
     };
+    const toggleTaxType = () => {
+  setTax(prevTax => ({
+    ...prevTax,
+    type: prevTax.type === '%' ? '$' : '%'
+  }));
+};
 
     const getTotal = () => {
       let total = subtotal;
@@ -312,11 +315,12 @@ function InvoiceTemp() {
             <div className="tax-input-container">
             <input 
                 type="Number" 
-                placeholder={inputMode} 
+                placeholder={tax.type} 
                 className="percentage-input"
                 value={tax.value}
-                onChange={(e) => setTax({ ...tax, value: e.target.value })} />
-                <button type="button" className="loop-button" onClick={toggleInputMode}>
+                onChange={(e) => setTax({ ...tax, value: e.target.value })} 
+              />
+              <button type="button" className="loop-button" onClick={toggleTaxType}>
                    <i style={{background:'none'}}><RxLoop /></i>
                 </button>
               </div>
@@ -425,7 +429,7 @@ function InvoiceTemp() {
                     <option value="SEK">SEK </option>
                     <option value="NZD">NZD </option>
                     <option value="NZD">LKR (Rs) </option>
-                    {/* Add more currencies as needed */}
+                    
                 </select>
                 <div className='save'>
                 <span >Save Default</span>
